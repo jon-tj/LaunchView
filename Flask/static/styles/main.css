@@ -1,0 +1,23 @@
+header{
+    position: absolute;
+    top:0;left:0;right:0;
+    height:2em;
+    background-color: white;
+    padding:0.5em;
+}
+header>button{
+    padding:0.5em;
+    background-color: #eee;
+    border:1px solid #bbb;
+    border-bottom: 1px solid #999;
+    border-radius: 0.5em;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+header>button:hover{
+    background-color: #ddd;
+}
+body{
+    margin:0;
+    background-color: #4b6e99;
+}

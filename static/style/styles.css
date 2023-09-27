@@ -1,0 +1,16 @@
+QWidget {
+    font-size: large;
+}
+
+.data_label {
+    font-size: 18px;
+    text-align: center;
+    background-color: None;
+}
+
+.countdown_label {
+    font-size: 35px;
+    text-align: center;
+    background-color: None;
+}
+
