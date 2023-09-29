@@ -17,10 +17,7 @@ header>button{
 header>button:hover{
     background-color: #ddd;
 }
-body{
-    margin:0;
-    background-color: #4b6e99;
-}
+body{ margin:0; }
 
 .graph{
     position: absolute;
@@ -30,11 +27,38 @@ body{
     padding-top: 2px;
     background-color: white;
 }
-canvas#RSSI{
+#RSSI.graph{
     left:1em;
     bottom:1em;
 }
-canvas#Temperature{
+#Temperature.graph{
     left:1em;
     bottom:calc(1.5em + 150px);
+}
+#Velocity.graph{
+    left:1em;
+    bottom:calc(1.5em + 310px);
+}
+
+img.logo{
+    height:3em;
+    position: absolute;
+    left:50%;
+    transform: translate(-50%, 0);
+}
+#status>img.disabled{
+    opacity: 0.5;
+}
+section#status{
+    position: absolute;
+    bottom: 1em;
+    right:1em;
+    width: fit-content;
+}
+p.filled{
+    background-color: white;
+    padding:0.5em;
+    font-size: 14pt;
+    position: relative;
+    top:10px;
 }

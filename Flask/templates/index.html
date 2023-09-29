@@ -11,13 +11,22 @@
     <header>
       <button>Start data collection</button>
       <button>Start countdown</button>
+
+      <img src="../static/img/logo.png" class="logo">
     </header>
     <section> <!-- Graphs -->
       <canvas class="graph" id="RSSI" width=400 height=150></canvas>
       <canvas class="graph" id="Temperature" width=400 height=150></canvas>
+      <canvas class="graph" id="Velocity" width=400 height=150></canvas>
     </section>
-    <section> <!-- Status icons -->
-      
+    <section id="status"> <!-- Status icons -->
+      <p class="filled">Status</p>
+      <img src="../static/img/icons/overheating.png" class="icon disabled" title="Overheating">
+      <img src="../static/img/icons/overheating.png" class="icon disabled" title="Overheating">
+      <img src="../static/img/icons/overheating.png" class="icon disabled" title="Overheating">
+    </section>
+    <section> <!-- Altitude -->
+
     </section>
   </body>
 

@@ -13,6 +13,12 @@ def ROUTE_index():
     return render_template('index.html')
 
 #endregion
+#------------------------------------
+#region api endpoints
+
+
+
+#endregion
 
 if __name__ == "__main__":
     app.run(debug=True)
