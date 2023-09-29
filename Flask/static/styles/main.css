@@ -21,3 +21,20 @@ body{
     margin:0;
     background-color: #4b6e99;
 }
+
+.graph{
+    position: absolute;
+    border-radius: 1em;
+    border:1px solid #666;
+    padding:1px;
+    padding-top: 2px;
+    background-color: white;
+}
+canvas#RSSI{
+    left:1em;
+    bottom:1em;
+}
+canvas#Temperature{
+    left:1em;
+    bottom:calc(1.5em + 150px);
+}

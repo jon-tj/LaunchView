@@ -1,27 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Launch View</title>
     <link rel="stylesheet" href="../static/styles/main.css">
-</head>
-<body>
+  </head>
+
+  <body>
     <header>
-        <button>Start data collection</button>
-        <button>Start countdown</button>
+      <button>Start data collection</button>
+      <button>Start countdown</button>
     </header>
-    <!--<canvas></canvas>-->
-</body>
-<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
-<script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@v0.156.1/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@v0.156.1/examples/jsm/"
+    <section> <!-- Graphs -->
+      <canvas class="graph" id="RSSI" width=400 height=150></canvas>
+      <canvas class="graph" id="Temperature" width=400 height=150></canvas>
+    </section>
+    <section> <!-- Status icons -->
+      
+    </section>
+  </body>
+
+  <!-- Three JS -->
+  <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@v0.156.1/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@v0.156.1/examples/jsm/"
+      }
     }
-  }
-</script>
-<script src="../static/js/declare.js"></script>
-<script type="module" src="../static/js/render.js"></script>
+  </script>
+
+  <!-- Beware of order of execution -->
+  <script src="../static/js/api.js"></script>
+  <script src="../static/js/graph.js"></script>
+  <script src="../static/js/live.js"></script>
+  <script type="module" src="../static/js/render.js"></script>
 </html>
