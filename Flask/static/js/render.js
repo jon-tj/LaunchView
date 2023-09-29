@@ -4,17 +4,18 @@ import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const scene = new THREE.Scene()
-scene.background=new THREE.Color(0x6698e8)
+scene.background=new THREE.Color(0x1e384d) //0x6698e8
 scene.add(new THREE.AxesHelper(5))
 scene.add(new THREE.AxesHelper(-5))
 
 // dual-lit scene for EPICNESS
-const sunlight = new THREE.DirectionalLight(0xccccff, 1);
+const sunlight = new THREE.DirectionalLight(0xccccee, 3);
 sunlight.position.set(1, 1, 1);
 scene.add(sunlight);
-const sunlight1 = new THREE.DirectionalLight(0xffcccc, 1);
+const sunlight1 = new THREE.DirectionalLight(0xeecccc, 1);
 sunlight1.position.set(-1, -1, -1);
 scene.add(sunlight1);
+
 
 const camera = new THREE.PerspectiveCamera(
     60,
@@ -23,8 +24,8 @@ const camera = new THREE.PerspectiveCamera(
     1000
 )
 camera.position.z = 6
-
-const renderer = new THREE.WebGLRenderer()
+const canvas3=document.querySelector("canvas#three")
+const renderer = new THREE.WebGLRenderer({canvas:canvas3})
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
@@ -32,12 +33,12 @@ const controls = new OrbitControls(camera, renderer.domElement)
 
 const matRocket = new THREE.MeshStandardMaterial({
     color: 0xffffff,
-    roughness: 0.5,
-    metalness: 0.5
+    roughness: 0.7,
+    metalness: 0.1
 });
 
 // creat the ground plane
-const matGround = new THREE.MeshBasicMaterial({ color: 0x448833 });
+const matGround = new THREE.MeshBasicMaterial({ color: 0x1c1b1a });
 const groundPlane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), matGround);
 groundPlane.position.y=-4;
 groundPlane.rotateX(-Math.PI/2);
