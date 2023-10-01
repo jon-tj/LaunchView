@@ -4,7 +4,7 @@ import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const scene = new THREE.Scene()
-scene.background=new THREE.Color(0x1e384d) //0x6698e8
+scene.background=new THREE.Color(0x75AADC) //0x6698e8
 scene.add(new THREE.AxesHelper(5))
 scene.add(new THREE.AxesHelper(-5))
 
@@ -38,7 +38,7 @@ const matRocket = new THREE.MeshStandardMaterial({
 });
 
 // creat the ground plane
-const matGround = new THREE.MeshBasicMaterial({ color: 0x1c1b1a });
+const matGround = new THREE.MeshBasicMaterial({ color: 0x1E4060 });
 const groundPlane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), matGround);
 groundPlane.position.y=-4;
 groundPlane.rotateX(-Math.PI/2);

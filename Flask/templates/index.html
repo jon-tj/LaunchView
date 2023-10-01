@@ -10,10 +10,19 @@
   <body>
     <canvas id="three"></canvas>
     <header>
-      <button>Start data collection</button>
-      <button>Start countdown</button>
+      <section class="light">
+        <button>Start data collection</button>
+        <button>Start countdown</button>
 
-      <img src="../static/img/logo.png" class="logo">
+        <img src="../static/img/logo.png" class="logo">
+      </section>
+      <section class="dark">
+        <h1 id="countdown">10:00</h1>
+        <section id="cli">
+          <input type="text" placeholder="Enter command..." id="console-input" autocomplete="off" spellcheck="false">
+          <section id="console-log"></section>
+        </section>
+      </section>
     </header>
     <section> <!-- Graphs -->
       <canvas class="graph" id="RSSI" width=400 height=150></canvas>
@@ -47,4 +56,5 @@
   <script src="../static/js/graph.js"></script>
   <script src="../static/js/live.js"></script>
   <script type="module" src="../static/js/render.js"></script>
+  <script src="../static/js/console.js"></script>
 </html>

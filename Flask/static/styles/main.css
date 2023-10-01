@@ -1,11 +1,18 @@
 header{
     position: absolute;
     top:0;left:0;right:0;
-    height:2em;
+}
+header>section.light{
     background-color: white;
     padding:0.5em;
+    height:2em;
 }
-header>button{
+header>section.dark{
+    background-color: rgb(20, 20, 20);
+    padding:0.5em;
+    height:2.4em;
+}
+button{
     padding:0.5em;
     background-color: #eee;
     border:1px solid #bbb;
@@ -14,7 +21,7 @@ header>button{
     cursor: pointer;
     transition: background-color 0.2s;
 }
-header>button:hover{
+button:hover{
     background-color: #ddd;
 }
 body{ margin:0; overflow-x: hidden;}
@@ -61,4 +68,57 @@ p.filled{
     font-size: 14pt;
     position: relative;
     top:10px;
+}
+
+#countdown{
+    color:white;
+    font-weight: 900;
+    margin: 0;
+    font-size: 2em;
+    position: absolute;
+    left:50%;
+    transform: translate(-50%, 0);
+    width: fit-content;
+}
+
+#cli{
+    background-color: #222;
+    border: 1px solid #666;
+    border-radius: 0.5em;
+    padding:0.3em;
+    position: relative;
+    width: fit-content;
+}
+#cli>input{
+    color:rgb(175, 255, 151);
+    border:none;
+    outline:none;
+    background-color: #222;
+}
+#cli>section{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: translate(0,calc(100% + 1px));
+    padding: 0.5em;
+    border: none;
+    outline:none;
+    background-color: #222;
+    min-width:calc(100% - 0.6em);
+    width: 25em;
+    height:8em;
+    border-radius: 0.5em;
+    display: none;
+}
+section#console-log>p{
+    margin: 0;
+    color:rgb(175, 255, 151);
+}
+section#console-log>p:hover{background-color: black;
+}
+.system{color:rgb(76, 180, 221);
+}
+.user{color:rgb(49, 167, 49);
+}
+.err{color:rgb(221, 81, 76);
 }

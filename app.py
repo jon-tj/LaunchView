@@ -7,7 +7,6 @@ import time as t
 import numpy as np
 import os
 import pyquaternion as pq
-import pyperclip
 import webbrowser
 from geopy.geocoders import Nominatim
 from datetime import datetime, timedelta
@@ -179,9 +178,10 @@ class MainWindow(QMainWindow):
         ]
         for i, label in enumerate(self.status_labels):
             self.data_layout.addWidget(label, i + 8, 0)
-
+        def setStatus(i,msg,status="success"):
+            self.status_labels[i].setText(msg+":"+" "*(28-len(msg))+status)
         self.status_actions = {      # actions to take depending on status bytes
-            0: lambda bit: self.status_labels[0].setText(f'Pre launch offsets:         Set') if int(bit) else self.status_labels[0].setText(f'Pre launch offsets:         Not set'),   # reference values set by launch imminent message
+            0: lambda bit: setStatus(0,'Pre launch offsets',"Set" if int(bit) else "Not set"),   # reference values set by launch imminent message
             1: lambda bit: self.status_labels[1].setText(f'Magnetometer reference      Set') if int(bit) else self.status_labels[1].setText(f'Magnetometer reference      Not set'),   # magnetometer reference set
             2: lambda bit: self.status_labels[2].setText(f'Accelerometer:              Online') if int(bit) else self.status_labels[2].setText(f'Accelerometer:              Offline'),   # accel comms OK
             3: lambda bit: self.status_labels[3].setText(f'Magnetometer:               Online') if int(bit) else self.status_labels[3].setText(f'Magnetometer:               Offline'),   # magnet comms OK
@@ -200,14 +200,7 @@ class MainWindow(QMainWindow):
         }
 
     def data_in_lists(self):
-        
-        if len(self.data['t']) > 0:
-
-            return True
-        
-        else:
-
-            return False
+        return len(self.data['t']) > 0
 
     def decode_and_calculations(self):
 

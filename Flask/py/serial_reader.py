@@ -1,8 +1,6 @@
 import serial
 from serial import *
-import random as r
 import numpy as np
-import os
 import serial.tools.list_ports
 import time as t
 
