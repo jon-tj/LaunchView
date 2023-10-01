@@ -40,6 +40,13 @@ def api_get_phase(): return get_phase()
 @app.route("/api/phase", methods=["POST"])
 def api_next_phase(): return next_phase()
 
+@app.route("/api/fire")
+def api_countdown_fire():
+    #
+    # DO SOME STUFF HERE
+    #
+    return next_phase()
+
 # Commands
 @app.route("/api/command", methods=["POST"])
 def api_exec_command():

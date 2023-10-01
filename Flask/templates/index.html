@@ -12,12 +12,31 @@
     <header>
       <section class="light">
         <button>Start data collection</button>
-        <button>Start countdown</button>
+        <button onclick="toggleCountdown(this)">Start countdown</button>
 
         <img src="../static/img/logo.png" class="logo">
       </section>
       <section class="dark">
         <h1 id="countdown">10:00</h1>
+        <section class="status">
+          <aside class="icons-group">
+            <img src="../static/img/icons/overheating.png" class="icon disabled" title="Overheating">
+            <img src="../static/img/icons/overheating.png" class="icon disabled" title="Overheating">
+          </aside>
+          <aside class="icons-group">
+            <img src="../static/img/icons/overheating.png" class="icon disabled" title="Overheating">
+            <img src="../static/img/icons/overheating.png" class="icon disabled" title="Overheating">
+            <img src="../static/img/icons/overheating.png" class="icon disabled" title="Overheating">
+          </aside>
+          <aside class="badge">
+            <p>Phase</p>
+            <p>Pre-launch</p>
+          </aside>
+          <aside class="badge">
+            <p>Status</p>
+            <p>Stable</p>
+          </aside>
+        </section>
         <section id="cli">
           <input type="text" placeholder="Enter command..." id="console-input" autocomplete="off" spellcheck="false">
           <section id="console-log"></section>
@@ -29,12 +48,7 @@
       <canvas class="graph" id="Temperature" width=400 height=150></canvas>
       <canvas class="graph" id="Velocity" width=400 height=150></canvas>
     </section>
-    <section id="status"> <!-- Status icons -->
-      <p class="filled">Status</p>
-      <img src="../static/img/icons/overheating.png" class="icon disabled" title="Overheating">
-      <img src="../static/img/icons/overheating.png" class="icon disabled" title="Overheating">
-      <img src="../static/img/icons/overheating.png" class="icon disabled" title="Overheating">
-    </section>
+
     <section> <!-- Altitude -->
 
     </section>
@@ -57,4 +71,5 @@
   <script src="../static/js/live.js"></script>
   <script type="module" src="../static/js/render.js"></script>
   <script src="../static/js/console.js"></script>
+  <script src="../static/js/countdown.js"></script>
 </html>
