@@ -30,7 +30,7 @@ body{ margin:0; overflow: hidden;}
     opacity: 0.8;
     position: absolute;
     border-radius: 1em;
-    border:1px solid #666;
+    /*border:1px solid #666;*/
     padding:1px;
     padding-top: 2px;
     background-color: white;
@@ -40,12 +40,12 @@ body{ margin:0; overflow: hidden;}
     bottom:1em;
 }
 #Temperature.graph{
-    left:1em;
-    bottom:calc(1.5em + 150px);
+    left:26.5em;
+    bottom:1em;
 }
 #Velocity.graph{
-    left:1em;
-    bottom:calc(1.5em + 310px);
+    left:52em;
+    bottom:1em;
 }
 
 img.logo{
