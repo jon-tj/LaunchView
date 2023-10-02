@@ -51,7 +51,7 @@ class Graph{
             confInt:true,
         }
         this.style={
-            bgColor:"rgba(0,0,0,0.3)"
+            bgColor:"rgba(0,0,0,0.6)"
         }
         this.values=[];
         this.tmean=[];

@@ -11,8 +11,10 @@ const gTemp=setupGraph("Temperature","#FF7F64")
 const gVel=setupGraph("Velocity","#77FF64")
 // Test the live rendering!
 /*setInterval(() => {
-    gRSSI.appendValue(Math.random()*20)
+    for(var i=0; i<3; i++){
+        gRSSI.appendValue(Math.random()*50)
+        gTemp.appendValue(Math.random()*50)
+    }
     gRSSI.render()
-    gTemp.appendValue(Math.random()*20)
     gTemp.render()
 }, 500);*/
