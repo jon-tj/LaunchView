@@ -23,14 +23,15 @@ const camera = new THREE.PerspectiveCamera(
     1,
     1000
 )
-camera.position.z = 6
+camera.position.z = 7
+camera.position.y=1
 const canvas3=document.querySelector("canvas#three")
 const renderer = new THREE.WebGLRenderer({canvas:canvas3})
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
 const controls = new OrbitControls(camera, renderer.domElement)
-
+controls.enableZoom = false;
 const matRocket = new THREE.MeshStandardMaterial({
     color: 0xffffff,
     roughness: 0.7,

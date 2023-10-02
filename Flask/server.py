@@ -5,26 +5,19 @@ import json
 
 # Import dependencies
 from py.commands import CommandHandler
-from py.datamng import DataManager
 from py.orientation import OrientationService
 from py.gps import GPS
 from py.phases import get_phase,next_phase
 from py.telemetry import TelemetryService
-import py.csv_data_writer as csv_data_writer
-
-from py.csv_data_writer import csv_data_writer
-from py.serial_reader import serial_reader, send_single_command
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
 # Set up dependencies
 comhdl = CommandHandler()
-datamng = DataManager()
 rot = OrientationService()
 gps = GPS()
-tlmsrv = TelemetryService(serial_reader,csv_data_writer)
-tlmsrv.try_connect()
+tlmsrv = TelemetryService()
 
 #region templates -----------------------------------------
 @app.route("/")

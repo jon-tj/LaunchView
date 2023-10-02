@@ -1,4 +1,9 @@
 from multiprocessing import Process, Queue
+from datetime import datetime
+from py.serial_reader import serial_reader, send_single_command
+from py.csv_data_writer import csv_data_writer
+
+
 class TelemetryService:
     """
     # Received telemetry messages 
@@ -22,8 +27,7 @@ class TelemetryService:
     00    | sensor system comms OK            |
     """
 
-    def __init__(self,serial_reader,csv_writer):
-        self.alive = False
+    def __init__(self):
         self.status={
             "pre-launch-ref": False,
             "magnetometer-ref": False,
@@ -46,8 +50,21 @@ class TelemetryService:
         self.command_q = Queue()
         self.csv_queue = Queue()
         self.countdown_q = Queue()
+        self.data={}
+        
+        data_keys = ['t', 'counter', 'a_x', 'a_y', 'a_z', 'mag_x', 'mag_y', 'mag_z', 'gyro_x', 'gyro_y', 'gyro_z', 'GPS_lat', 'GPS_long', 'alt', 'temp', 'p_mBar', 'GPS_fix', 'recovery_phase', 'recovery_status', 'angle_est', 'rssi', 'snr']
+        for k in data_keys: self.data[k] = []
+
+        self.recording=False
         self.p1_read_serial_data = Process(target=serial_reader, args=(self.data_q, self.command_q))
-        self.p2_write_to_csv_file = Process(target=csv_writer, args=(self.csv_queue,))
+        self.p2_write_to_csv_file = Process(target=csv_data_writer, args=(self.csv_queue,))
+
+    def set_recording_state(self,recording=True):
+        if self.p1_read_serial_data.is_alive() == False:    # Might not be necessary to do this here. Not too important though.
+            self.p1_read_serial_data.start()
+            self.p2_write_to_csv_file.start()
+        self.recording = recording
+        print(f"Recording {'started' if recording else 'paused'}")
 
     def get_status(self,request):
         if request in self.status:
@@ -56,15 +73,36 @@ class TelemetryService:
 
     def receive_data(self):
         success = True
+        received_data = self.data_q.get()
+        #t = received_data[0] / 25  # Should be in the CSV file.
+
+        if self.recording:
+            self.csv_queue.put(received_data)
+
+        if received_data[2] != 170:
+            print(f"ERROR: PLOT variable error detected. Plots will not be updated {datetime.now()}.")
+            self.missed_packages_counter += 1
+        else:  # If the data is valid (plot == 170), add it to the data dictionary.
+            self.missed_packages_counter = 0
+
+            data_keys = ['t', 'counter', 'a_x', 'a_y', 'a_z', 'mag_x', 'mag_y', 'mag_z', 'gyro_x', 'gyro_y', 'gyro_z', 'GPS_lat', 'GPS_long', 'alt', 'temp', 'p_mBar', 'GPS_fix', 'recovery_phase', 'recovery_status', 'angle_est', 'rssi', 'snr']
+
+            for i, key in enumerate(data_keys):
+                self.data[key].append(received_data[i])
+            """
+            if len(self.data['t']) >= self.ARRAY_SIZE:  # If the data dictionary is too long, remove the oldest data.
+                for key in data_keys:
+                    self.data[key].pop(0)
+            """
+
         return success
     
-    def try_connect(self):
-
-        self.alive = self.receive_data() # returns True if connection is established
-        return self.alive
+    def close(self):
+        self.p1_read_serial_data.terminate()
+        self.p2_write_to_csv_file.terminate()
 
     def send_command(self, command):
-        """
-        We assume self.alive==True.
-        See commands.py for more information.
-        """
+        if self.p1_read_serial_data.is_alive():
+            self.command_q.put((command))
+        else:
+            send_single_command(command)

@@ -43,15 +43,21 @@
         </section>
       </section>
     </header>
-    <section> <!-- Graphs -->
+    <section class="graphs"> <!-- Graphs -->
       <canvas class="graph" id="RSSI" width=400 height=150></canvas>
       <canvas class="graph" id="Temperature" width=400 height=150></canvas>
       <canvas class="graph" id="Velocity" width=400 height=150></canvas>
     </section>
+    
+    <audio id="tts1">
+      <source type="audio/wav">
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="tts2">
+      <source type="audio/wav">
+      Your browser does not support the audio element.
+    </audio>
 
-    <section> <!-- Altitude -->
-
-    </section>
   </body>
 
   <!-- Three JS -->
@@ -72,4 +78,5 @@
   <script type="module" src="../static/js/render.js"></script>
   <script src="../static/js/console.js"></script>
   <script src="../static/js/countdown.js"></script>
+  <script src="../static/js/play-audio.js"></script>
 </html>

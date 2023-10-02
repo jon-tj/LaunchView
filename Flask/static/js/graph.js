@@ -51,7 +51,7 @@ class Graph{
             confInt:true,
         }
         this.style={
-            bgColor:"#eee"
+            bgColor:"rgba(0,0,0,0.3)"
         }
         this.values=[];
         this.tmean=[];
@@ -92,6 +92,7 @@ class Graph{
     }
     render(clear=true){
         if (clear){
+            this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height)
             this.ctx.fillStyle=this.style.bgColor
             this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height)
         }

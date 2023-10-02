@@ -27,13 +27,13 @@ button:hover{
 body{ margin:0; overflow: hidden;}
 
 .graph{
-    opacity: 0.8;
+    /*opacity: 0.8;*/
     position: absolute;
     border-radius: 1em;
     /*border:1px solid #666;*/
     padding:1px;
     padding-top: 2px;
-    background-color: white;
+    /*background-color: white;*/
 }
 #RSSI.graph{
     left:1em;

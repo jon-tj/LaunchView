@@ -12,12 +12,12 @@ class CommandHandler:
         command = command.lower().strip()
         err=None
         output=""
-
+        """
         if not tlmService.alive:
             err="Telemetry service is not alive."
             print(err)
             return err
-
+        """
         if command in self.commands:
             tlmService.send_command(self.commands[command])
             output="Sent command: %s" % self.commands[command]

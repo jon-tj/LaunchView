@@ -114,6 +114,7 @@ class MainWindow(QMainWindow):
             'countdown': [],
         }
         
+        #region pyqt
         self.main_widget = QWidget()
         self.setCentralWidget(self.main_widget)
         self.showFullScreen()
@@ -134,6 +135,7 @@ class MainWindow(QMainWindow):
         self.set_up_3D_display()
         self.set_up_labels_and_data_layout()
         self.set_up_toolbar()
+        #endregion
 
         # Bjørn
         self.set_up_calculations()
@@ -158,72 +160,62 @@ class MainWindow(QMainWindow):
         self.angle_estimate = 0
 
     def setup_status_labels(self):
-        self.status_labels = [
-            QLabel(f'Pre launch offsets:         Not set'),
-            QLabel(f'Magnetometer reference      Not set'),
-            QLabel(f'Accelerometer:              Offline'),
-            QLabel(f'Magnetometer:               Offline'),
-            QLabel(f'Gyroscope:                  Offline'),
-            QLabel(f'Dangerous angle detected:   No'),
-            QLabel(f'Drogue Chute activated:     No'),
-            QLabel(f'Main Chute activated:       No'),
-            QLabel(f'Positive Vertical Speed:    No'),
-            QLabel(f'Writing to flash:           No'),
-            QLabel(f'Flash blocked:              No'),
-            QLabel(f'Flash Reset performed:      No'),
-            QLabel(f'Telemetry ping              No Reply'),
-            QLabel(f'Telemetry duplex confirmed: No'),
-            QLabel(f'Telemetry handshake         No Reply'),
-            QLabel(f'Sensor system handshake     No Reply'),
+        status_labels_text = [
+            'Pre launch offsets:         Not set',
+            'Magnetometer reference      Not set',
+            'Accelerometer:              Offline',
+            'Magnetometer:               Offline',
+            'Gyroscope:                  Offline',
+            'Dangerous angle detected:   No',
+            'Drogue Chute activated:     No',
+            'Main Chute activated:       No',
+            'Positive Vertical Speed:    No',
+            'Writing to flash:           No',
+            'Flash blocked:              No',
+            'Flash Reset performed:      No',
+            'Telemetry ping              No Reply',
+            'Telemetry duplex confirmed: No',
+            'Telemetry handshake         No Reply',
+            'Sensor system handshake     No Reply'
         ]
+
+        self.status_labels = [QLabel(text) for text in status_labels_text]
         for i, label in enumerate(self.status_labels):
             self.data_layout.addWidget(label, i + 8, 0)
-        def setStatus(i,msg,status="success"):
-            self.status_labels[i].setText(msg+":"+" "*(28-len(msg))+status)
-        self.status_actions = {      # actions to take depending on status bytes
-            0: lambda bit: setStatus(0,'Pre launch offsets',"Set" if int(bit) else "Not set"),   # reference values set by launch imminent message
-            1: lambda bit: self.status_labels[1].setText(f'Magnetometer reference      Set') if int(bit) else self.status_labels[1].setText(f'Magnetometer reference      Not set'),   # magnetometer reference set
-            2: lambda bit: self.status_labels[2].setText(f'Accelerometer:              Online') if int(bit) else self.status_labels[2].setText(f'Accelerometer:              Offline'),   # accel comms OK
-            3: lambda bit: self.status_labels[3].setText(f'Magnetometer:               Online') if int(bit) else self.status_labels[3].setText(f'Magnetometer:               Offline'),   # magnet comms OK
-            4: lambda bit: self.status_labels[4].setText(f'Gyroscope:                  Online') if int(bit) else self.status_labels[4].setText(f'Gyroscope:                  Offline'),   # gyro comms OK
-            5: lambda bit: self.status_labels[5].setText(f'Dangerous angle detected:   Yes') if int(bit) else self.status_labels[5].setText(f'Dangerous angle detected:   No'),   # dangerous angle detected
-            6: lambda bit: self.status_labels[6].setText(f'Drogue Chute activated:     Yes') if int(bit) else self.status_labels[6].setText(f'Drogue Chute activated:     No'),   # drogue chute deployed
-            7: lambda bit: self.status_labels[7].setText(f'Main Chute activated:       Yes') if int(bit) else self.status_labels[7].setText(f'Main Chute activated:       No'),   # main chute deployed
-            8: lambda bit: self.status_labels[8].setText(f'Positive Vertical Speed:    Yes') if int(bit) else self.status_labels[8].setText(f'Positive Vertical Speed:    No'),   # movement direction (1=up, 0=down)
-            9: lambda bit: self.status_labels[9].setText(f'Writing to flash:           Yes') if int(bit) else self.status_labels[9].setText(f'Writing to flash:           No'),   # writing to flash
-            10: lambda bit: self.status_labels[10].setText(f'Flash blocked:              Yes') if int(bit) else self.status_labels[10].setText(f'Flash blocked:              No'),  # flash memory blocked from writing
-            11: lambda bit: self.status_labels[11].setText(f'Flash Reset performed:      Yes') if int(bit) else self.status_labels[11].setText(f'Flash Reset performed:      No'),  # flash reset performed
-            12: lambda bit: self.status_labels[12].setText(f'Telemetry ping              Message received') if int(bit) else self.status_labels[12].setText(f'Telemetry ping              No Reply'),  # recent message from telemetry
-            13: lambda bit: self.status_labels[13].setText(f'Telemetry duplex confirmed: Yes') if int(bit) else self.status_labels[13].setText(f'Telemetry duplex confirmed: No'),  # duplex communication confirmed
-            14: lambda bit: self.status_labels[14].setText(f'Telemetry handshake         OK') if int(bit) else self.status_labels[14].setText(f'Telemetry handshake         No Reply'),  # telemetry handshake OK
-            15: lambda bit: self.status_labels[15].setText(f'Sensor system handshake     OK') if int(bit) else self.status_labels[15].setText(f'Sensor system handshake     No Reply'),  # sensors handshake OK
+
+        self.status_actions = {
+            i: (lambda bit, msg=msg, status=status: self.status_labels[i].setText(msg + ":" + " " * (28 - len(msg)) + status))
+            for i, (msg, status) in enumerate(zip(status_labels_text, [
+                'Set', 'Set', 'Online', 'Online', 'Online', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Message received',
+                'Yes', 'OK', 'OK'
+            ]))
         }
 
     def data_in_lists(self):
         return len(self.data['t']) > 0
 
     def decode_and_calculations(self):
-
-        # decode status byte
-        # bit #     || function                          || notes
-	    # ----------||-----------------------------------||--------------------
-	    # bit 15    || pre_launch_referanse satt         || settes når launch soon-beskjed er mottatt og referanser/kalibrering er utført
-	    # bit 14    || magnetometer reference OK         ||
-	    # bit 13    || accelerometer comms OK            ||
-	    # bit 12    || magnetometer comms OK             ||
-	    # bit 11    || gyroscope comms OK                ||
-	    # bit 10    || dangerous angle                   || no separation yet, but dangerous angle detected
-	    # bit 09    || separation activated              ||
-	    # bit 08    || main chute activated              ||
-	    # bit 07    || movement direction (up/down)      || 1 = up, 0 = down
-	    # bit 06    || writing live data to flash        ||
-	    # bit 05    || protecting flash memory           ||
-	    # bit 04    || flash reset performed             ||
-	    # bit 03    || telemetri message received        ||
-	    # bit 02    || two way comms OK                  ||
-	    # bit 01    || telemetry comms OK                ||
-	    # bit 00    || sensor system comms OK            ||
-
+        """
+        # Received telemetry messages 
+        bit   | function                          | notes
+        ------|-----------------------------------|--------------------
+        15    | pre_launch_referanse satt         | settes når 'launch soon' er mottatt+kalibrering utført
+        14    | magnetometer reference OK         |
+        13    | accelerometer comms OK            |
+        12    | magnetometer comms OK             |
+        11    | gyroscope comms OK                |
+        10    | dangerous angle                   | spoopy angle detected(before separation)
+        09    | separation activated              |
+        08    | main chute activated              |
+        07    | movement direction (up/down)      | 1 = up, 0 = down
+        06    | writing live data to flash        |
+        05    | protecting flash memory           |
+        04    | flash reset performed             |
+        03    | telemetri message received        |
+        02    | two way comms OK                  |
+        01    | telemetry comms OK                |
+        00    | sensor system comms OK            |
+        """
         if self.data_in_lists():
 
             status_u16 = '{0:b}'.format(self.data['recovery_status'][-1])
@@ -426,13 +418,10 @@ class MainWindow(QMainWindow):
 
 
     def toggle_csv_process(self, on):
-        if on:
-            self.CSV_ACTIVE = True
-            self.csv_process_toggle_button.setText("CSV IS NOW ACTIVE")
-        else:
-            self.CSV_ACTIVE = False
-            self.csv_process_toggle_button.setText("CSV IS NOT ON    ")
-
+        self.CSV_ACTIVE = on
+        msg = f'CSV is {"" if on else "not "}active'
+        print(msg)
+        self.csv_process_toggle_button.setText(msg)
 
     def change_plot_speed(self, value):
         """
@@ -445,7 +434,7 @@ class MainWindow(QMainWindow):
 
     def start_countdown(self):
         self.countdown_timer.start()
-
+        """
         ## Initialize geolocator
         #geolocator = Nominatim(user_agent="my_app")
 
@@ -460,7 +449,7 @@ class MainWindow(QMainWindow):
 
         ## Open the URL in a web browser 
         #webbrowser.open(url)
-        
+        """
 
     def pause_countdown(self):
         self.countdown_timer.stop()
@@ -472,20 +461,19 @@ class MainWindow(QMainWindow):
         new_time = self.seconds_to_time_str(self.T_MINUS)
 
         self.countdown_label.setText(f"t {new_time}")
+        time_messages = {
+            180: "Three minutes to launch.",
+            60: "One minute to launch.",
+            30: "Thirty seconds to launch.",
+            0: "Ignition"
+        }
 
-        if self.T_MINUS == 60 * 3:
-            os.system("say 'Three minutes to launch.'")
-        
-        if self.T_MINUS == 60:
-            os.system("say 'One minute to launch.'")
+        message = time_messages.get(self.T_MINUS)
+        if message:
+            os.system(f"say '{message}'")
+            print(message)
 
-        if self.T_MINUS == 30:
-            os.system("say 'Thirty seconds to launch.'")
-
-        if self.T_MINUS == 0:
-            os.system("say 'Ignition'")
-
-
+#region ignore
     def edit_countdown(self):
         new_time = self.new_time.text()
 
@@ -516,58 +504,33 @@ class MainWindow(QMainWindow):
     def hours_minutes_seconds_to_seconds(self, hours, minutes, seconds):
         
         return hours * 3600 + minutes * 60 + seconds
-    
+    #endregion
 
     def process_user_command(self):
         command = self.input.text()
+        commands = {
+            "communication check": "PPPPP",
+            "launch imminent": "GGGGG",
+            "abort": "ABORT",
+            "separate": "SSSSS",
+            "deploy main": "MMMMM"
+        }
 
-        if command == "communication check" or command == "COMMUNICATION CHECK":
-            if self.p1_read_serial_data.is_alive() == True:
-                self.command_q.put(("PPPPP"))
-                self.input.clear()
+        command = command.lower()
+        if command in commands:
+            action = commands[command]
+            if self.p1_read_serial_data.is_alive():
+                self.command_q.put((action))
             else:
-                send_single_command("PPPPP")
-                self.input.clear()
-    
-        elif command == "launch imminent" or command == "LAUNCH IMMINENT":
-            if self.p1_read_serial_data.is_alive() == True:
-                self.command_q.put(("GGGGG"))
-                self.input.clear()
-            else:
-                send_single_command("GGGGG")
-                self.input.clear()
-
-        elif command == "abort" or command == "ABORT":
-            if self.p1_read_serial_data.is_alive() == True:
-                self.command_q.put(("ABORT"))
-                self.input.clear()
-            else:
-                send_single_command("ABORT")
-                self.input.clear()
-
-        elif command == "separate" or command == "SEPARATE":
-            if self.p1_read_serial_data.is_alive() == True:
-                self.command_q.put(("SSSSS"))
-                self.input.clear()
-            else:
-                send_single_command("SSSSS")
-                self.input.clear()
-
-        elif command == "deploy main" or command == "DEPLOY MAIN":
-            if self.p1_read_serial_data.is_alive() == True:
-                self.command_q.put(("MMMMM"))
-                self.input.clear()
-            else:
-                send_single_command("MMMMM")
-                self.input.clear()
-            
+                send_single_command(action)
+            self.input.clear()
         else:
-            print("\n LAUNCH PROGRAM ERROR: Invalid command for send_command function. Valid commands are: \n 'communication check' \n 'launch imminent' \n 'abort' \n")
+            print("\n LAUNCH PROGRAM ERROR: Invalid command for send_command function.")
 
 
     def set_up_labels_and_data_layout(self):
         self.start_button = QPushButton('Start Data Collection')
-        self.start_button.clicked.connect(self.start_clicked)
+        self.start_button.clicked.connect(self.btn_start_data_clicked)
         self.start_button.setCheckable(True)
 
         self.rocket_time_label = QLabel("Time, rocket: 0:00:00")
@@ -628,22 +591,18 @@ class MainWindow(QMainWindow):
         #self.p3_countdown = Process(target=countdown, args=(self.countdown_q,))
 
 
-    def start_clicked(self):
-
+    def btn_start_data_clicked(self):
         if self.p1_read_serial_data.is_alive() == False:    # Might not be necessary to do this here. Not too important though.
             self.p1_read_serial_data.start()
             self.p2_write_to_csv_file.start()
 
-        if self.START_CLICKED == False:
+        self.START_CLICKED = not self.START_CLICKED
+        if self.START_CLICKED:
             self.timer.start()
             self.start_button.setText('Pause Data Collection')
-            self.START_CLICKED = True
-
         else:
             self.timer.stop()
             self.start_button.setText('Start Data Collection')
-            self.START_CLICKED = False
-
 
     def get_new_data(self):
         """
@@ -651,73 +610,25 @@ class MainWindow(QMainWindow):
         """
 
         #tracemalloc.start()
-
-        counter, plot, a_x, a_y, a_z, mag_x, mag_y, mag_z, gyro_x, gyro_y, gyro_z, GPS_lat, GPS_long, alt, temp, p_mBar, GPS_fix, recovery_phase, recovery_status, angle_est, rssi, snr = self.data_q.get()      # Receive data from serial process. 
-        
-        t = counter / 25    # Should be in csv file.
+        received_data = self.data_q.get()
+        t = received_data[0] / 25  # Should be in the CSV file.
 
         if self.CSV_ACTIVE:
-            self.csv_queue.put((t, counter, plot, a_x, a_y, a_z, mag_x, mag_y, mag_z, gyro_x, gyro_y, gyro_z, GPS_lat, GPS_long, alt, temp, p_mBar, GPS_fix, recovery_phase, recovery_status, angle_est, rssi, snr))
+            self.csv_queue.put(received_data)
 
-
-        # Do this in the serial process instead (?)
-        #if self.PROGRAM == 1 or self.PROGRAM == 2:
-        #    self.csv_queue.put((counter, plot, a_x, a_y, a_z, mag_x, mag_y, mag_z, gyro_x, gyro_y, GPS_lat, GPS_long, alt, temp, p_mBar, GPS_fix, recovery_phase, recovery_status, angle_est, rssi))    # Send data to csv process.
-        
-        if plot == 170:    # If the data is valid, add it to the data dictionary. Status 170 means plots are OK.
-            
+        if received_data[2] == 170:  # If the data is valid (plot == 170), add it to the data dictionary.
             self.missed_packages_counter = 0
 
-            self.data['t'].append(t)
-            self.data['counter'].append(counter)
-            self.data['a_x'].append(a_x)
-            self.data['a_y'].append(a_y)
-            self.data['a_z'].append(a_z)
-            self.data['mag_x'].append(mag_x)
-            self.data['mag_y'].append(mag_y)
-            self.data['mag_z'].append(mag_z)
-            self.data['gyro_x'].append(gyro_x)
-            self.data['gyro_y'].append(gyro_y)
-            self.data['gyro_z'].append(gyro_z)
-            self.data['GPS_lat'].append(GPS_lat)
-            self.data['GPS_long'].append(GPS_long)
-            self.data['alt'].append(alt)
-            self.data['temp'].append(temp)
-            self.data['p_mBar'].append(p_mBar)
-            self.data['GPS_fix'].append(GPS_fix)
-            self.data['recovery_phase'].append(recovery_phase)
-            self.data['recovery_status'].append(recovery_status)
-            self.data['angle_est'].append(angle_est)
-            self.data['rssi'].append(rssi)
-            self.data['snr'].append(snr)
+            data_keys = ['t', 'counter', 'a_x', 'a_y', 'a_z', 'mag_x', 'mag_y', 'mag_z', 'gyro_x', 'gyro_y', 'gyro_z', 'GPS_lat', 'GPS_long', 'alt', 'temp', 'p_mBar', 'GPS_fix', 'recovery_phase', 'recovery_status', 'angle_est', 'rssi', 'snr']
 
-            if len(self.data['t']) >= self.ARRAY_SIZE:    # If the data dictionary is too long, remove the oldest data.
-                self.data['t'].pop(0)
-                self.data['counter'].pop(0)
-                self.data['a_x'].pop(0)
-                self.data['a_y'].pop(0)
-                self.data['a_z'].pop(0)
-                self.data['mag_x'].pop(0)
-                self.data['mag_y'].pop(0)
-                self.data['mag_z'].pop(0)
-                self.data['gyro_x'].pop(0)
-                self.data['gyro_y'].pop(0)
-                self.data['GPS_lat'].pop(0)
-                self.data['GPS_long'].pop(0)
-                self.data['alt'].pop(0)
-                self.data['temp'].pop(0)
-                self.data['p_mBar'].pop(0)
-                self.data['GPS_fix'].pop(0)
-                self.data['recovery_phase'].pop(0)
-                self.data['recovery_status'].pop(0)
-                self.data['angle_est'].pop(0)
-                self.data['rssi'].pop(0)
-                self.data['snr'].pop(0)
+            for i, key in enumerate(data_keys):
+                self.data[key].append(received_data[i])
 
-
+            if len(self.data['t']) >= self.ARRAY_SIZE:  # If the data dictionary is too long, remove the oldest data.
+                for key in data_keys:
+                    self.data[key].pop(0)
         else:
             print(f"LAUNCH PROGRAM ERROR: PLOT variable error detected. Plots will not be updated {datetime.now()}.")
-
             self.missed_packages_counter += 1
 
     
