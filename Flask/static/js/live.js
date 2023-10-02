@@ -2,7 +2,7 @@
 // Maybe consider rendering live boxplots for data summarization?
 function setupGraph(name,color="cyan"){
     var g=new Graph(document.querySelector("canvas#"+name),color,30,name)
-        .setValues([1,2,3,2,5,1,3,2,0.4,5,20,12,13,12,14,12,10,9,7,10]) //dummy values
+        .setValues([1,2,3,2,5,1,3,2,0.4,5,20,12,13,12,14,12,10,9,7,10,7]) //dummy values
     g.render()
     return g
 }

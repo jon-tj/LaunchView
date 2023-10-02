@@ -90,19 +90,47 @@ class Graph{
         this.recalcStats()
         return this;
     }
+
     render(clear=true){
-        if (clear){
+        if (clear){ // clear
             this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height)
             this.ctx.fillStyle=this.style.bgColor
             this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height)
         }
-        this.ctx.strokeStyle=this.color
+        // get bounds
         var minY=this.minY
         var maxY=this.maxY
         if(minY==null) minY=Math.min(...this.values)
         if(maxY==null) maxY=Math.max(...this.values)
         var i=Math.max(0,this.values.length-this.maxperiod);
 
+        // render axis
+        this.ctx.strokeStyle=this.color
+        function diff(a,b){return Math.abs(a-b)}
+        var targetInc = diff(minY,maxY)*0.1
+        var increment=Math.pow(10,Math.floor(Math.log10(targetInc)))
+        if(diff(increment*5,targetInc)<diff(increment,targetInc)){
+            increment*=5
+        }
+
+        this.ctx.globalAlpha=0.6
+        var iter=0;
+        for(var y=0; y<maxY; y+=increment){
+            var ry=remap(y,minY,maxY,this.dest.top,this.dest.bottom)
+            this.ctx.moveTo(this.dest.right-42,ry)
+            this.ctx.lineTo(this.dest.right-(iter%5==0?35:38),ry)
+            if(iter%5==0){
+                this.ctx.fillStyle=this.color
+                this.ctx.font="18px Arial"
+                this.ctx.fillText(y.toFixed(1),this.dest.right-32,ry+5)
+            }
+            iter++;
+        }
+        this.ctx.stroke()
+        this.ctx.globalAlpha=1
+        
+        
+        // render values
         function pt(ths,i,render=true){
             var y=remap(ths.values[i],minY,maxY,ths.dest.top,ths.dest.bottom)
             var x=remap(i,ths.values.length,ths.values.length-ths.maxperiod,ths.dest.right-30,ths.dest.left)
@@ -117,11 +145,17 @@ class Graph{
             lastY=pt(this,i)
         this.ctx.stroke()
     
+        // current value
+        this.ctx.fillStyle="black"
+        this.ctx.fillRect(this.dest.right-33,lastY-12,40,20)
         this.ctx.fillStyle=this.color
         this.ctx.font="18px Arial"
-        this.ctx.fillText(this.values[this.values.length-1].toFixed(2),this.dest.right-40,lastY+5)
+        this.ctx.fillText(this.values[this.values.length-1].toFixed(1),this.dest.right-32,lastY+5)
 
-        if(this.overlays.mean){
+        if(this.overlays.label!=""){ // label
+            this.ctx.fillText(this.overlays.label,this.dest.x,this.dest.y+9,this.dest.w)
+        }
+        if(this.overlays.mean){ // dashed mean
             var mean=0
             for(var i=0; i<this.values.length; i++) mean+=this.values[i]
             mean/=this.values.length
@@ -133,10 +167,7 @@ class Graph{
             this.ctx.fillText(mean.toFixed(2),this.dest.right-40,y+5)
 
         }
-        if(this.overlays.label!=""){
-            this.ctx.fillText(this.overlays.label,this.dest.x,this.dest.y+9,this.dest.w)
-        }
-        if(this.overlays.confInt){
+        if(this.overlays.confInt){ // interval
             var upper=[]
             var lower=[]
             var X=[]
@@ -169,6 +200,7 @@ class Graph{
             this.ctx.closePath()
             this.ctx.fill()
             this.ctx.globalAlpha=1
+            this.ctx.beginPath()
         }
     }
 
