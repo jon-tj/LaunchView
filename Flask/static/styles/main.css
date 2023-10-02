@@ -86,7 +86,12 @@ p.filled{
     position: absolute;
     left:50%;
     transform: translate(-50%, 0);
-    width: fit-content;
+    width: 5em;
+    text-align: center;
+    background-color: transparent;
+    border: none;
+    outline: none;
+
 }
 
 #cli{
